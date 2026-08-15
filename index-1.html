@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protector Norte — Seguridad para Eventos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #050810;
+    --bg-panel: #0a0f1f;
+    --blue-deep: #0b1a3a;
+    --blue-mid: #14247a;
+    --blue-bright: #1e40ff;
+    --cyan: #00e5ff;
+    --text: #e8ecf7;
+    --text-dim: #5b6b9e;
+    --text-dimmer: #34406b;
+    --danger: #ff3b5c;
+    --ok: #00ffa3;
+    --border: rgba(91,107,158,0.25);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+    background-image:
+      radial-gradient(ellipse 900px 500px at 15% -5%, rgba(30,64,255,0.18), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 20%, rgba(0,229,255,0.08), transparent 55%);
+  }
+
+  ::selection{background:var(--cyan);color:var(--bg);}
+
+  /* ---------- utility ---------- */
+  .wrap{max-width:1100px;margin:0 auto;padding:0 24px;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:"";width:18px;height:1px;background:var(--cyan);}
+  h1,h2,h3{font-family:'Chakra Petch',sans-serif;}
+  a{color:inherit;text-decoration:none;}
+
+  /* ---------- scanline / grid backdrop ---------- */
+  .grid-overlay{
+    position:fixed;inset:0;pointer-events:none;z-index:1;
+    background-image:linear-gradient(rgba(30,64,255,0.05) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(30,64,255,0.05) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse 90% 60% at 50% 0%, black, transparent 70%);
+    opacity:0.6;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(14px);
+    background:rgba(5,8,16,0.75);
+    border-bottom:1px solid var(--border);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;max-width:1100px;margin:0 auto;}
+  .logo{
+    font-family:'Chakra Petch',sans-serif;font-weight:700;font-size:18px;letter-spacing:0.03em;
+    display:flex;align-items:center;gap:8px;
+  }
+  .logo .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok);animation:pulse-dot 2s infinite;}
+  @keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:0.35;}}
+  .navlinks{display:flex;gap:28px;font-size:14px;color:var(--text-dim);}
+  .navlinks a:hover{color:var(--cyan);}
+  .nav-cta{
+    font-family:'JetBrains Mono',monospace;font-size:13px;
+    border:1px solid var(--cyan);color:var(--cyan);padding:8px 16px;border-radius:2px;
+    transition:all .2s;
+  }
+  .nav-cta:hover{background:var(--cyan);color:var(--bg);}
+  .navlinks{display:none;}
+  @media(min-width:760px){.navlinks{display:flex;}}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;z-index:2;
+    padding:90px 24px 70px;
+    max-width:1100px;margin:0 auto;
+    text-align:center;
+  }
+  .hero .eyebrow{justify-content:center;margin-bottom:22px;}
+  .glitch-wrap{position:relative;display:inline-block;}
+  .hero h1{
+    font-size:clamp(38px,8vw,86px);
+    font-weight:700;
+    line-height:1.02;
+    letter-spacing:-0.01em;
+    text-transform:uppercase;
+    position:relative;
+    color:var(--text);
+  }
+  .hero h1 span{display:block;}
+  .hero h1 .accent{
+    background:linear-gradient(90deg,var(--cyan),var(--blue-bright));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .glitch-layer{
+    position:absolute;top:0;left:0;width:100%;height:100%;
+    overflow:hidden;
+  }
+  .glitch-layer h1{position:absolute;top:0;left:0;width:100%;}
+  .glitch-1{color:var(--cyan);opacity:0.7;animation:glitch-1 3.4s infinite linear;}
+  .glitch-2{color:var(--danger);opacity:0.6;animation:glitch-2 3.4s infinite linear;}
+  @keyframes glitch-1{
+    0%,92%,100%{clip-path:inset(0 0 0 0);transform:translate(0,0);}
+    93%{clip-path:inset(10% 0 60% 0);transform:translate(-3px,0);}
+    94%{clip-path:inset(60% 0 5% 0);transform:translate(3px,0);}
+    95%{clip-path:inset(30% 0 40% 0);transform:translate(-2px,0);}
+    96%{clip-path:inset(0 0 0 0);transform:translate(0,0);}
+  }
+  @keyframes glitch-2{
+    0%,90%,100%{clip-path:inset(0 0 0 0);transform:translate(0,0);}
+    91%{clip-path:inset(70% 0 5% 0);transform:translate(3px,0);}
+    92%{clip-path:inset(15% 0 65% 0);transform:translate(-3px,0);}
+    93%{clip-path:inset(45% 0 20% 0);transform:translate(2px,0);}
+    94%{clip-path:inset(0 0 0 0);transform:translate(0,0);}
+  }
+  .hero p.lede{
+    max-width:560px;margin:26px auto 0;
+    color:var(--text-dim);font-size:16px;line-height:1.6;
+  }
+  .hero-actions{display:flex;gap:14px;justify-content:center;margin-top:36px;flex-wrap:wrap;}
+  .btn{
+    font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.03em;
+    padding:14px 26px;border-radius:2px;display:inline-flex;align-items:center;gap:8px;
+    transition:all .2s;cursor:pointer;border:1px solid transparent;
+  }
+  .btn-primary{background:var(--cyan);color:var(--bg);font-weight:600;}
+  .btn-primary:hover{box-shadow:0 0 24px rgba(0,229,255,0.4);transform:translateY(-1px);}
+  .btn-ghost{border-color:var(--border);color:var(--text);}
+  .btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);}
+
+  .radar{
+    width:120px;height:120px;margin:56px auto 0;position:relative;
+    border:1px solid var(--border);border-radius:50%;
+  }
+  .radar::before,.radar::after{
+    content:"";position:absolute;border:1px solid var(--border);border-radius:50%;
+  }
+  .radar::before{inset:20px;}
+  .radar::after{inset:40px;}
+  .radar-sweep{
+    position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(from 0deg, rgba(0,229,255,0.5), transparent 40%);
+    animation:spin 3s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .radar-center{position:absolute;top:50%;left:50%;width:6px;height:6px;background:var(--cyan);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 10px var(--cyan);}
+
+  /* ---------- section shell ---------- */
+  section{position:relative;z-index:2;padding:90px 0;}
+  .section-head{margin-bottom:48px;max-width:600px;}
+  .section-head h2{font-size:clamp(28px,4vw,42px);margin-top:14px;line-height:1.1;}
+  .section-head p{color:var(--text-dim);margin-top:14px;font-size:15px;line-height:1.6;}
+
+  /* ---------- servicios ---------- */
+  .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);}
+  .service-card{background:var(--bg-panel);padding:32px 26px;}
+  .service-card .num{font-family:'JetBrains Mono',monospace;color:var(--cyan);font-size:12px;letter-spacing:0.1em;}
+  .service-card h3{font-size:19px;margin:14px 0 10px;}
+  .service-card p{color:var(--text-dim);font-size:14px;line-height:1.6;}
+
+  /* ---------- nosotros ---------- */
+  .about-panel{
+    background:var(--bg-panel);border:1px solid var(--border);border-radius:8px;
+    padding:40px 36px;position:relative;overflow:hidden;
+  }
+  .about-panel::before{
+    content:"";position:absolute;top:-30%;left:-8%;width:360px;height:360px;
+    background:radial-gradient(circle,rgba(30,64,255,0.12),transparent 70%);
+    pointer-events:none;
+  }
+  .about-body{max-width:680px;position:relative;}
+  .about-body p{color:var(--text-dim);font-size:15px;line-height:1.75;margin-bottom:18px;}
+  .about-body p:last-child{margin-bottom:0;}
+  .about-signoff{
+    color:var(--text)!important;font-family:'JetBrains Mono',monospace;font-size:13px!important;
+    padding-top:18px;border-top:1px dashed var(--border);line-height:1.8!important;
+  }
+
+  /* ---------- unidades (guardias) ---------- */
+  .unit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
+  .unit-card{
+    background:linear-gradient(160deg,var(--bg-panel),#070c18);
+    border:1px solid var(--border);border-radius:6px;overflow:hidden;
+    position:relative;transition:border-color .2s;
+  }
+  .unit-card:hover{border-color:rgba(0,229,255,0.4);}
+  .unit-card::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--blue-bright),var(--cyan));
+  }
+  .unit-top{padding:22px 22px 0;display:flex;justify-content:space-between;align-items:flex-start;}
+  .unit-code{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dimmer);letter-spacing:0.1em;}
+  .unit-status{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ok);border:1px solid rgba(0,255,163,0.3);padding:3px 8px;border-radius:20px;}
+  .unit-avatar{
+    width:56px;height:56px;border-radius:6px;margin:16px 22px 0;
+    background:linear-gradient(135deg,var(--blue-mid),var(--blue-deep));
+    border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Chakra Petch',sans-serif;font-weight:700;font-size:20px;color:var(--cyan);
+    overflow:hidden;
+  }
+  .unit-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+  .unit-card h3{padding:14px 22px 2px;font-size:19px;}
+  .unit-role{padding:0 22px;color:var(--text-dim);font-size:13px;font-family:'JetBrains Mono',monospace;}
+  .unit-stats{
+    display:flex;flex-wrap:wrap;gap:8px;padding:14px 22px 0;
+  }
+  .unit-stats span{
+    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dimmer);
+    border:1px solid var(--border);border-radius:20px;padding:4px 10px;
+  }
+  .unit-rates{display:flex;gap:1px;margin-top:18px;background:var(--border);}
+  .unit-rate{flex:1;background:var(--bg-panel);padding:14px 16px;}
+  .unit-rate .label{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dimmer);font-family:'JetBrains Mono',monospace;}
+  .unit-rate .val{font-family:'Chakra Petch',sans-serif;font-weight:600;font-size:17px;margin-top:4px;color:var(--text);}
+  .unit-contact{
+    display:block;text-align:center;padding:13px;margin-top:1px;
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);
+    border-top:1px solid var(--border);transition:background .2s;
+  }
+  .unit-contact:hover{background:rgba(0,229,255,0.06);}
+
+  /* ---------- calculadora ---------- */
+  .calc-panel{
+    background:var(--bg-panel);border:1px solid var(--border);border-radius:8px;
+    padding:32px;position:relative;overflow:hidden;
+  }
+  .calc-panel::before{
+    content:"";position:absolute;top:-40%;right:-10%;width:400px;height:400px;
+    background:radial-gradient(circle,rgba(0,229,255,0.08),transparent 70%);
+    pointer-events:none;
+  }
+  .calc-guards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:20px;}
+  .calc-guard-opt{
+    border:1px solid var(--border);border-radius:6px;padding:14px 16px;
+    display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s;
+    background:rgba(255,255,255,0.01);
+  }
+  .calc-guard-opt:hover{border-color:rgba(0,229,255,0.35);}
+  .calc-guard-opt.active{border-color:var(--cyan);background:rgba(0,229,255,0.06);}
+  .calc-guard-opt input{accent-color:var(--cyan);width:16px;height:16px;}
+  .calc-guard-opt .g-name{font-size:14px;font-weight:600;}
+  .calc-guard-opt .g-rate{font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;}
+
+  /* Calendario de disponibilidad */
+  .cal-panel{
+    background:var(--bg-panel);border:1px solid var(--border);border-radius:8px;
+    padding:32px;
+  }
+  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+  .cal-header h3{font-family:'Chakra Petch',sans-serif;font-size:18px;text-transform:capitalize;}
+  .cal-nav{display:flex;gap:8px;}
+  .cal-nav button{
+    background:transparent;border:1px solid var(--border);color:var(--text);
+    width:34px;height:34px;border-radius:6px;cursor:pointer;font-size:16px;
+    transition:all .15s;
+  }
+  .cal-nav button:hover{border-color:var(--cyan);color:var(--cyan);}
+  .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:8px;}
+  .cal-weekdays span{
+    text-align:center;font-size:10px;color:var(--text-dimmer);
+    font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;
+  }
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+  .cal-day{
+    aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+    border-radius:6px;font-size:13px;font-family:'JetBrains Mono',monospace;
+    border:1px solid transparent;
+  }
+  .cal-day.empty{visibility:hidden;}
+  .cal-day.past{color:var(--text-dimmer);opacity:0.35;}
+  .cal-day.free{
+    background:rgba(0,255,150,0.06);border-color:rgba(0,255,150,0.25);color:var(--ok);
+    cursor:pointer;transition:all .15s;
+  }
+  .cal-day.free:hover{background:rgba(0,255,150,0.16);border-color:var(--ok);transform:scale(1.05);}
+  .cal-day.busy{
+    background:rgba(255,60,60,0.08);border-color:rgba(255,60,60,0.3);color:#ff6b6b;
+    text-decoration:line-through;opacity:0.7;
+  }
+  .cal-day.today{outline:1px solid var(--cyan);}
+  .cal-legend{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;}
+  .cal-legend span{
+    display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim);
+    font-family:'JetBrains Mono',monospace;
+  }
+  .cal-legend .dot{width:10px;height:10px;border-radius:3px;}
+  .cal-legend .dot.free{background:rgba(0,255,150,0.4);border:1px solid var(--ok);}
+  .cal-legend .dot.busy{background:rgba(255,60,60,0.3);border:1px solid #ff6b6b;}
+
+  .calc-mode{display:flex;gap:10px;margin-top:26px;}
+  .mode-btn{
+    flex:1;text-align:center;padding:14px;border:1px solid var(--border);border-radius:6px;
+    font-family:'JetBrains Mono',monospace;font-size:13px;cursor:pointer;transition:all .15s;color:var(--text-dim);
+  }
+  .mode-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,0.06);}
+
+  .hours-row{display:flex;align-items:center;gap:14px;margin-top:20px;}
+  .hours-row.hidden{display:none;}
+  .hours-row label{font-size:13px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;}
+  .stepper{display:flex;align-items:center;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+  .stepper button{
+    width:38px;height:38px;background:transparent;border:none;color:var(--cyan);font-size:18px;cursor:pointer;
+  }
+  .stepper button:hover{background:rgba(0,229,255,0.08);}
+  .stepper span{width:44px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:15px;}
+
+  .calc-result{
+    margin-top:28px;padding-top:26px;border-top:1px dashed var(--border);
+    display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;
+  }
+  .calc-total .label{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-dimmer);font-family:'JetBrains Mono',monospace;}
+  .calc-total .amount{font-family:'Chakra Petch',sans-serif;font-weight:700;font-size:38px;color:var(--cyan);margin-top:4px;}
+  .calc-total .sub{font-size:12px;color:var(--text-dim);margin-top:4px;}
+  .calc-empty{color:var(--text-dimmer);font-size:13px;font-style:italic;}
+
+  /* ---------- proceso ---------- */
+  .process{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;}
+  .process-step{padding-left:20px;border-left:2px solid var(--border);}
+  .process-step .n{font-family:'JetBrains Mono',monospace;color:var(--cyan);font-size:13px;}
+  .process-step h3{font-size:17px;margin:10px 0 8px;}
+  .process-step p{color:var(--text-dim);font-size:14px;line-height:1.6;}
+
+  /* ---------- contacto ---------- */
+  .contact-panel{
+    background:linear-gradient(135deg,var(--blue-deep),#050810 70%);
+    border:1px solid var(--border);border-radius:8px;padding:44px 32px;text-align:center;
+  }
+  .contact-panel h2{font-size:clamp(24px,4vw,34px);}
+  .contact-panel p{color:var(--text-dim);margin:14px auto 28px;max-width:440px;font-size:15px;}
+  .contact-methods{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+
+  footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--text-dimmer);font-size:12px;font-family:'JetBrains Mono',monospace;}
+
+  @media(max-width:600px){
+    section{padding:64px 0;}
+    .hero{padding:64px 20px 50px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-overlay"></div>
+
+<header>
+  <div class="nav">
+    <div class="logo"><span class="dot"></span>PROTECTOR NORTE</div>
+    <nav class="navlinks">
+      <a href="#servicios">Servicios</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#unidades">Unidades</a>
+      <a href="#cotizar">Cotizar</a>
+      <a href="#disponibilidad">Disponibilidad</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <a class="nav-cta" href="#cotizar">COTIZAR →</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">SEGURIDAD PRIVADA · SANTIAGO DEL ESTERO</div>
+  <div class="glitch-wrap">
+    <h1>
+      <span>Cobertura</span>
+      <span class="accent">bajo control.</span>
+    </h1>
+    <div class="glitch-layer glitch-1" aria-hidden="true">
+      <h1><span>Cobertura</span><span class="accent">bajo control.</span></h1>
+    </div>
+    <div class="glitch-layer glitch-2" aria-hidden="true">
+      <h1><span>Cobertura</span><span class="accent">bajo control.</span></h1>
+    </div>
+  </div>
+  <p class="lede">Custodia profesional para eventos, fiestas y reuniones privadas en Santiago del Estero. Elegí cuántas unidades necesitás y cotizá al instante.</p>
+  <div class="hero-actions">
+    <a href="#cotizar" class="btn btn-primary">ARMAR COTIZACIÓN</a>
+    <a href="#unidades" class="btn btn-ghost">VER UNIDADES</a>
+  </div>
+  <div class="radar"><div class="radar-sweep"></div><div class="radar-center"></div></div>
+</section>
+
+<section id="servicios">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Qué cubrimos</div>
+      <h2>Un servicio, cuatro escenarios.</h2>
+      <p>Empezamos enfocados en eventos privados. A medida que el equipo crezca, vamos a sumar cobertura para comercios y empresas.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="num">01</div>
+        <h3>Fiestas y cumpleaños</h3>
+        <p>Control de acceso e ingreso ordenado en reuniones privadas.</p>
+      </div>
+      <div class="service-card">
+        <div class="num">02</div>
+        <h3>Casamientos</h3>
+        <p>Presencia discreta durante toda la ceremonia y la fiesta.</p>
+      </div>
+      <div class="service-card">
+        <div class="num">03</div>
+        <h3>Eventos corporativos</h3>
+        <p>Custodia para lanzamientos, aniversarios y reuniones de empresa.</p>
+      </div>
+      <div class="service-card">
+        <div class="num">04</div>
+        <h3>Recitales y peñas</h3>
+        <p>Cobertura para eventos con mayor afluencia de público.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="nosotros">
+  <div class="wrap">
+    <div class="about-panel">
+      <div class="section-head" style="margin-bottom:28px;">
+        <div class="eyebrow">Quiénes somos</div>
+        <h2>La presencia que protege.</h2>
+      </div>
+      <div class="about-body">
+        <p>Protector Norte nace en Santiago del Estero con una idea simple: los eventos privados —casamientos, cumpleaños, recitales, reuniones corporativas— merecen la misma tranquilidad que cualquier evento masivo, sin recurrir a empresas grandes, impersonales y caras. Es un proyecto que arranca hoy con una sola persona al frente, y que va a ir sumando gente de confianza a medida que crece.</p>
+        <p>Elegí empezar así, a propósito: antes de ser una empresa grande con caras que no conocés, preferí que sepas exactamente quién va a estar presente en tu evento, desde el primer mensaje hasta el último minuto de cobertura. Cada persona que se vaya sumando al equipo va a tener su propia ficha en esta misma página, con su nombre, su tarifa y su forma de contacto — nada anónimo, nada tercerizado.</p>
+        <p>La coordinación es simple y directa: escribís, contás qué necesitás, y te confirmo disponibilidad y precio al toque. Sin intermediarios, sin letra chica — presupuesto claro y confirmación por escrito antes del evento.</p>
+        <p>Visto de negro completo, con credencial de identificación con foto y datos de contacto, y actúo siempre con discreción — la seguridad se nota en que todo funciona, no en que se note demasiado.</p>
+        <p class="about-signoff">Elegí el nombre pensando en dos cosas: la custodia que ofrezco, y la región que me identifica. Empiezo chico, a propósito. Prefiero crecer despacio y bien, con gente conocida y de confianza, antes que escalar rápido perdiendo lo que va a distinguir a Protector Norte.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="unidades">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Quién te cuida</div>
+      <h2 id="unitHeading">Tu contacto directo.</h2>
+      <p id="unitSubhead">Por ahora soy yo quien cubre cada evento personalmente. A medida que sume gente de confianza, van a aparecer acá con su propia ficha.</p>
+    </div>
+    <div class="unit-grid" id="unitGrid"></div>
+  </div>
+</section>
+
+<section id="cotizar">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Cotización instantánea</div>
+      <h2>Armá tu cobertura.</h2>
+      <p>Elegí las unidades y la modalidad. El total se calcula solo — después lo confirmás por WhatsApp.</p>
+    </div>
+
+    <div class="calc-panel">
+      <div id="step1Label" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);letter-spacing:0.08em;">PASO 1 — SELECCIONÁ LAS UNIDADES</div>
+      <div id="comboHint" style="font-size:12px;color:var(--ok);margin-top:6px;">💡 Contratando a todo el equipo para toda la noche, el precio es un combo cerrado — más conveniente que por separado.</div>
+      <div class="calc-guards" id="calcGuards"></div>
+
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);letter-spacing:0.08em;margin-top:28px;">PASO 2 — MODALIDAD</div>
+      <div class="calc-mode">
+        <div class="mode-btn active" data-mode="hora">POR HORA</div>
+        <div class="mode-btn" data-mode="noche">TODA LA NOCHE</div>
+      </div>
+
+      <div class="hours-row" id="hoursRow">
+        <label>CANTIDAD DE HORAS</label>
+        <div class="stepper">
+          <button id="hourMinus">−</button>
+          <span id="hourVal">3</span>
+          <button id="hourPlus">+</button>
+        </div>
+      </div>
+
+      <div class="calc-result">
+        <div class="calc-total">
+          <div class="label">TOTAL ESTIMADO</div>
+          <div class="amount" id="totalAmount">$0</div>
+          <div class="sub" id="totalSub">Seleccioná al menos una unidad</div>
+        </div>
+        <a href="#" id="waButton" class="btn btn-primary" style="pointer-events:none;opacity:0.4;">CONFIRMAR POR WHATSAPP →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="disponibilidad">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Disponibilidad</div>
+      <h2>Mirá qué días tengo libres.</h2>
+      <p>En verde, los días disponibles para tu evento. En rojo, los que ya están comprometidos. Tocá un día libre para consultarlo directo por WhatsApp.</p>
+    </div>
+    <div class="cal-panel">
+      <div class="cal-header">
+        <button id="calPrev" class="cal-nav-btn" style="background:transparent;border:1px solid var(--border);color:var(--text);width:34px;height:34px;border-radius:6px;cursor:pointer;">←</button>
+        <h3 id="calMonthLabel"></h3>
+        <button id="calNext" class="cal-nav-btn" style="background:transparent;border:1px solid var(--border);color:var(--text);width:34px;height:34px;border-radius:6px;cursor:pointer;">→</button>
+      </div>
+      <div class="cal-weekdays">
+        <span>DOM</span><span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-legend">
+        <span><span class="dot free"></span> Disponible</span>
+        <span><span class="dot busy"></span> Ocupado</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Cómo funciona</div>
+      <h2>De la cotización al evento.</h2>
+    </div>
+    <div class="process">
+      <div class="process-step">
+        <div class="n">01</div>
+        <h3>Cotizás online</h3>
+        <p>Elegís unidades y horario en la calculadora, sin llamadas ni esperas.</p>
+      </div>
+      <div class="process-step">
+        <div class="n">02</div>
+        <h3>Confirmás por WhatsApp</h3>
+        <p>El resumen ya viene armado. Solo confirmás fecha, lugar y horario.</p>
+      </div>
+      <div class="process-step">
+        <div class="n">03</div>
+        <h3>Coordinamos el operativo</h3>
+        <p>Definimos puntos de control y horarios de llegada antes del evento.</p>
+      </div>
+      <div class="process-step">
+        <div class="n">04</div>
+        <h3>Cobertura en el lugar</h3>
+        <p>Las unidades se presentan puntual, identificadas y en contacto directo con vos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contacto">
+  <div class="wrap">
+    <div class="contact-panel">
+      <div class="eyebrow" style="justify-content:center;">Contacto directo</div>
+      <h2>¿Preferís coordinar directamente?</h2>
+      <p>Escribinos por WhatsApp o completá el formulario y te respondemos con la disponibilidad.</p>
+      <div class="contact-methods">
+        <a class="btn btn-primary" id="mainWaLink" href="#" target="_blank">ESCRIBIR AL COORDINADOR</a>
+        <a class="btn btn-ghost" href="mailto:Voitinasilvasantiago@gmail.com">ENVIAR EMAIL</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  PROTECTOR NORTE · SEGURIDAD PARA EVENTOS · SANTIAGO DEL ESTERO, ARGENTINA
+</footer>
+
+<script>
+  // ---------- Datos de las unidades ----------
+  // Por ahora hay una sola persona activa (vos). Cuando sumes gente de confianza,
+  // agregá un objeto más a este array con sus datos — todo lo demás (fichas,
+  // selección múltiple en la calculadora y el combo de equipo completo) se activa solo.
+  const GUARDS = [
+    { id: "u1", code: "UN-01", name: "Santiago Voitina Silva", alias: "SVS", role: "Coordinador y custodia de eventos", age: 20, height: "1,79 m", rateHour: 3000, rateNight: 24300, phone: "5493855228699", isCoordinator: true },
+    // { id: "u2", code: "UN-02", name: "Nombre completo", alias: "APODO", role: "Custodia de eventos", age: 0, height: "0,00 m", rateHour: 0, rateNight: 0, phone: "549...", photo: "https://link-a-la-foto.jpg" },
+  ];
+
+  const COORDINATOR_PHONE = GUARDS.find(g => g.isCoordinator).phone;
+
+  // Precio combo cuando se contrata a todo el equipo junto para toda la noche (valor de ejemplo — ajustalo al real)
+  const FULL_TEAM_NIGHT_PRICE = 300000;
+
+  function fmt(n){ return "$" + n.toLocaleString("es-AR"); }
+
+  // ---------- Render unidades ----------
+  const unitGrid = document.getElementById("unitGrid");
+  const unitHeading = document.getElementById("unitHeading");
+  const unitSubhead = document.getElementById("unitSubhead");
+
+  if(GUARDS.length === 1){
+    unitHeading.textContent = "Tu contacto directo.";
+    unitSubhead.textContent = "Por ahora soy yo quien cubre cada evento personalmente. A medida que sume gente de confianza, van a aparecer acá con su propia ficha.";
+  } else {
+    unitHeading.textContent = `${GUARDS.length} unidades, tarifa propia.`;
+    unitSubhead.textContent = "Cada integrante fija su propia tarifa y atiende su propio contacto. Si necesitás al equipo completo, todo se coordina por un solo canal.";
+  }
+
+  GUARDS.forEach(g => {
+    const initials = (g.alias || g.name).slice(0,2).toUpperCase();
+    const avatarContent = g.photo ? `<img src="${g.photo}" alt="${g.name}">` : initials;
+    const waMsg = encodeURIComponent(`Hola ${g.name.split(" ")[0]}, te escribo desde la web de Protector Norte para consultar disponibilidad.`);
+    unitGrid.innerHTML += `
+      <div class="unit-card">
+        <div class="unit-top">
+          <span class="unit-code">${g.code}${g.alias ? " · " + g.alias : ""}</span>
+        </div>
+        <div class="unit-avatar">${avatarContent}</div>
+        <h3>${g.name}</h3>
+        <div class="unit-role">${g.role}</div>
+        <div class="unit-stats">
+          <span>Edad: ${g.age}</span>
+          <span>Altura: ${g.height}</span>
+          <span>Uniforme: negro completo</span>
+        </div>
+        <div class="unit-rates">
+          <div class="unit-rate"><div class="label">Por hora</div><div class="val">${fmt(g.rateHour)}</div></div>
+          <div class="unit-rate"><div class="label">Toda la noche</div><div class="val">${fmt(g.rateNight)}</div></div>
+        </div>
+        <a class="unit-contact" href="https://wa.me/${g.phone}?text=${waMsg}" target="_blank">CONTACTAR DIRECTO →</a>
+      </div>
+    `;
+  });
+
+  // ---------- Calculadora ----------
+  const calcGuards = document.getElementById("calcGuards");
+  const selected = new Set();
+  let mode = "hora";
+  let hours = 3;
+
+  if(GUARDS.length === 1){
+    // Con una sola persona activa, no tiene sentido pedir que la "seleccionen":
+    // queda elegida automáticamente y se ocultan los textos de selección múltiple.
+    selected.add(GUARDS[0].id);
+    document.getElementById("step1Label").style.display = "none";
+    document.getElementById("comboHint").style.display = "none";
+    calcGuards.innerHTML = `
+      <div class="calc-guard-opt active" style="cursor:default;">
+        <div>
+          <div class="g-name">${GUARDS[0].code} · ${GUARDS[0].name}</div>
+          <div class="g-rate">${fmt(GUARDS[0].rateHour)}/hora · ${fmt(GUARDS[0].rateNight)} noche</div>
+        </div>
+      </div>
+    `;
+  } else {
+    GUARDS.forEach(g => {
+      const opt = document.createElement("label");
+      opt.className = "calc-guard-opt";
+      opt.dataset.id = g.id;
+      opt.innerHTML = `
+        <input type="checkbox" />
+        <div>
+          <div class="g-name">${g.code} · ${g.name}</div>
+          <div class="g-rate">${fmt(g.rateHour)}/hora · ${fmt(g.rateNight)} noche</div>
+        </div>
+      `;
+      opt.addEventListener("click", (e) => {
+        e.preventDefault();
+        const cb = opt.querySelector("input");
+        if(selected.has(g.id)){ selected.delete(g.id); cb.checked = false; opt.classList.remove("active"); }
+        else { selected.add(g.id); cb.checked = true; opt.classList.add("active"); }
+        updateCalc();
+      });
+      calcGuards.appendChild(opt);
+    });
+  }
+
+  document.querySelectorAll(".mode-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      mode = btn.dataset.mode;
+      document.getElementById("hoursRow").classList.toggle("hidden", mode === "noche");
+      updateCalc();
+    });
+  });
+
+  document.getElementById("hourPlus").addEventListener("click", () => { hours = Math.min(hours+1, 12); document.getElementById("hourVal").textContent = hours; updateCalc(); });
+  document.getElementById("hourMinus").addEventListener("click", () => { hours = Math.max(hours-1, 1); document.getElementById("hourVal").textContent = hours; updateCalc(); });
+
+  function updateCalc(){
+    const chosen = GUARDS.filter(g => selected.has(g.id));
+    const totalAmount = document.getElementById("totalAmount");
+    const totalSub = document.getElementById("totalSub");
+    const waButton = document.getElementById("waButton");
+
+    if(chosen.length === 0){
+      totalAmount.textContent = "$0";
+      totalSub.textContent = "Seleccioná al menos una unidad";
+      waButton.style.pointerEvents = "none";
+      waButton.style.opacity = "0.4";
+      return;
+    }
+
+    let total = 0;
+    let isCombo = false;
+    if(mode === "hora"){
+      total = chosen.reduce((sum,g) => sum + g.rateHour * hours, 0);
+      totalSub.textContent = `${chosen.length} unidad${chosen.length>1?"es":""} · ${hours} hora${hours>1?"s":""}`;
+    } else if(GUARDS.length > 1 && chosen.length === GUARDS.length){
+      total = FULL_TEAM_NIGHT_PRICE;
+      isCombo = true;
+      totalSub.textContent = `Combo equipo completo · turno noche entero`;
+    } else {
+      total = chosen.reduce((sum,g) => sum + g.rateNight, 0);
+      totalSub.textContent = `${chosen.length} unidad${chosen.length>1?"es":""} · turno noche completo`;
+    }
+
+    totalAmount.textContent = fmt(total);
+    totalAmount.style.color = isCombo ? "var(--ok)" : "var(--cyan)";
+    waButton.style.pointerEvents = "auto";
+    waButton.style.opacity = "1";
+
+    // Si es 1 sola unidad, va directo a esa persona. Si son varias, va al coordinador.
+    const targetPhone = chosen.length === 1 ? chosen[0].phone : COORDINATOR_PHONE;
+    const namesList = chosen.map(g => `${g.code} (${g.name})`).join(", ");
+    const modeText = mode === "hora" ? `${hours} hora(s)` : (isCombo ? "toda la noche — combo equipo completo" : "toda la noche");
+    const msg = `Hola, quiero cotizar seguridad con Protector Norte.%0AUnidad(es): ${namesList}%0AModalidad: ${modeText}%0ATotal estimado: ${fmt(total)}%0A¿Está disponible?`;
+    waButton.href = `https://wa.me/${targetPhone}?text=${msg}`;
+  }
+
+  updateCalc();
+
+  // ---------- Contacto general (coordinador) ----------
+  document.getElementById("mainWaLink").href = `https://wa.me/${COORDINATOR_PHONE}?text=${encodeURIComponent("Hola, quiero consultar por el servicio de seguridad para un evento.")}`;
+
+  // ---------- Calendario de disponibilidad ----------
+  // Cargá acá las fechas que ya tenés comprometidas, formato "AAAA-MM-DD".
+  // Cuando cierres un evento, agregá la fecha; cuando termine, la podés borrar.
+  const UNAVAILABLE_DATES = [
+    // "2026-08-15",
+    // "2026-08-22",
+  ];
+
+  const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  let calMonth = today.getMonth();
+  let calYear = today.getFullYear();
+
+  function toISO(y,m,d){
+    return `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+  }
+
+  function renderCalendar(){
+    const grid = document.getElementById("calGrid");
+    const label = document.getElementById("calMonthLabel");
+    label.textContent = `${MESES[calMonth]} ${calYear}`;
+    grid.innerHTML = "";
+
+    const firstDay = new Date(calYear, calMonth, 1).getDay();
+    const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+
+    for(let i=0; i<firstDay; i++){
+      grid.innerHTML += `<div class="cal-day empty"></div>`;
+    }
+
+    for(let d=1; d<=daysInMonth; d++){
+      const dateObj = new Date(calYear, calMonth, d);
+      const iso = toISO(calYear, calMonth, d);
+      const isPast = dateObj < today;
+      const isToday = dateObj.getTime() === today.getTime();
+      const isBusy = UNAVAILABLE_DATES.includes(iso);
+
+      let cls = "cal-day";
+      if(isToday) cls += " today";
+      if(isPast){
+        cls += " past";
+        grid.innerHTML += `<div class="${cls}">${d}</div>`;
+      } else if(isBusy){
+        cls += " busy";
+        grid.innerHTML += `<div class="${cls}">${d}</div>`;
+      } else {
+        cls += " free";
+        const msg = encodeURIComponent(`Hola, quería consultar disponibilidad para el ${d} de ${MESES[calMonth]} de ${calYear}.`);
+        grid.innerHTML += `<a href="https://wa.me/${COORDINATOR_PHONE}?text=${msg}" target="_blank" class="${cls}">${d}</a>`;
+      }
+    }
+  }
+
+  document.getElementById("calPrev").addEventListener("click", () => {
+    calMonth--;
+    if(calMonth < 0){ calMonth = 11; calYear--; }
+    renderCalendar();
+  });
+  document.getElementById("calNext").addEventListener("click", () => {
+    calMonth++;
+    if(calMonth > 11){ calMonth = 0; calYear++; }
+    renderCalendar();
+  });
+
+  renderCalendar();
+</script>
+
+</body>
+</html>
